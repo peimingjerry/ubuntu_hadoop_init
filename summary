@@ -1,0 +1,85 @@
+
+######################
+ifconfig
+/etc/hostname
+/etc/hosts
+  127.0.0.1	localhost
+  192.168.0.10	master
+  192.168.0.11	node1
+  192.168.0.12	node2
+
+/etc/network/interfaces
+  auto eth0
+  iface eth0 inet static
+  address 192.168.1.10
+  netmask 255.255.255.0
+  gateway 192.168.1.1
+
+/etc/resolv.conf
+  nameserver 202.106.0.20
+######################
+apt-get update
+apt-get install vim
+######################
+groupadd hadoop
+useradd -s /bin/bash -d /home/peiming -m peiming -g hadoop -G root
+passwd peiming
+######################
+ssh-keygen -t dsa -P '' -f ~/.ssh/id_dsa
+cd .ssh/
+cat id_dsa.pub >> authorized_keys
+apt-get install openssh-server
+service ssh start
+ps -e |grep ssh
+/etc/ssh/sshd_config
+  1. PermitRootLogin yes
+  2. negotiate failed
+Ciphers aes128-cbc,aes192-cbc,aes256-cbc,aes128-ctr,aes192-ctr,aes256-ctr,3des-cbc,arcfour128,arcfour256,arcfour,blowfish-cbc,cast128-cbc
+
+MACs hmac-md5,hmac-sha1,umac-64@openssh.com,hmac-ripemd160,hmac-sha1-96,hmac-md5-96
+
+KexAlgorithms diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1,diffie-hellman-group-exchange-sha256,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group1-sha1,curve25519-sha256@libssh.org
+
+scp peiming@master:~/.ssh/id_dsa.pub ./master_dsa.pub
+cat master_dsa.pub >> authorized_keys
+######################
+#to download some website, put the wibsite after the following
+wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie"
+######################
+/etc/profile
+  export JAVA_HOME=/opt/jdk1.8.0_77
+  export HADOOP_INSTALL=/home/peiming/hadoop-2.6.4
+  export PATH=$PATH:$HADOOP_INSTALL/bin
+source /etc/profile
+
+######################
+/home/peiming/hadoop-2.6.4/share/hadoop/mapreduce
+hadoop fs -put 1.txt /input
+hadoop fs -put 2.txt /input
+hadoop jar hadoop-mapreduce-examples-2.6.4.jar aggregatewordcount /input /output
+hadoop fs -cat /output/part
+######################
+github:
+# initialize
+ssh-keygen -t rsa -C "zhoupeiming@qq.com"
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_rsa
+git config --global user.name "peimingjerry"
+git config --global user.email "zhoupeiming@qq.com"
+ssh -v git@github.com
+# create a new project (first in the web add the repository)
+git init
+git add .
+git commit -m "add list"
+git remote add origin git@github.com:peimingjerry/python_datastruct.git
+git push origin master
+git show
+git branch -r
+git branch -l
+git remote -v
+# clone a remote repository to local
+git clone git@github.com:peimingjerry/compiler.git
+
+######################
+######################
+######################
